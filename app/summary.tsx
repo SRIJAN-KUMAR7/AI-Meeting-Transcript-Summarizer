@@ -27,7 +27,6 @@ export default function SummaryPage({ sum }: SummaryProps) {
     const subject = encodeURIComponent("Shared Summary");
     const body = encodeURIComponent(summary);
 
-    // Open Gmail compose in new tab
     window.open(
       `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`,
       '_blank'
