@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <footer className="bg-white shadow p-4 text-center text-sm text-gray-500">
-          &copy; 2025 AI Notes Summarizer
+          &copy; 2025 AI Notes Summarizer-Internshala Assignment
         </footer>
       </body>
     </html>
