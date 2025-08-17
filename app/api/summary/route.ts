@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import db from '@/lib/db';
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,25 +33,28 @@ export async function POST(req: NextRequest) {
     }
 
     const summary = groqData.choices[0].message.content;
-
-    const insertQuery = `
-      INSERT INTO summaries (prompt, summary, transcript, created_at)
-      VALUES ($1, $2, $3, NOW())
+    const result = await db`
+      INSERT INTO summaries(prompt, summary, transcript, created_at)
+      VALUES (${prompt}, ${summary}, ${transcript}, NOW())
       RETURNING id, summary
     `;
-    const values = [prompt, summary, transcript];
-    const result = await pool.query(insertQuery, values);
-    const dbSummary = result.rows[0];
+    const dbSummary = result[0];
     return NextResponse.json({
       summary: dbSummary.summary,
       id: dbSummary.id,
     });
-  } catch (err: any) {
-    console.log(err)
-    return NextResponse.json(
-      { error: err.message || 'AI summary failed' },
-      { status: 500 },
-      
-    );
+  } catch (err: unknown) {
+    if (err instanceof Error){
+
+      return NextResponse.json(
+        { success: false, error: err.message || 'Mail error' }, 
+        { status: 500 }
+      );
+    } else {
+      return NextResponse.json(
+        { success: false, error: "An unknown error occurred" }, 
+        { status: 500 }
+      );
+    }
   }
 }
