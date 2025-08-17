@@ -3,43 +3,35 @@
 import React, { useState } from 'react';
 import { PaperAirplaneIcon, PencilSquareIcon, SparklesIcon } from '@heroicons/react/24/outline';
 
-export default function SummaryPage() {
+interface SummaryProps {
+  sum: string;
+}
+
+export default function SummaryPage({ sum }: SummaryProps) {
   const [summary, setSummary] = useState('');
   const [email, setEmail] = useState('');
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
 
   React.useEffect(() => {
     const localSummary = localStorage.getItem('summary');
-    if (localSummary) setSummary(localSummary);
-  }, []);
+    if (localSummary || sum) setSummary(sum! || localSummary!);
+  }, [sum]);
 
-  const handleSend = async () => {
+  const handleSend = () => {
     if (!email || !summary) {
       setError('Provide both a summary & email address.');
       return;
     }
-    setSending(true);
     setError('');
-    setSent(false);
-    try {
-      const res = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ summary, email }),
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setSent(true);
-        setError('');
-      } else {
-        setError(data.error || 'Failed to send email');
-      }
-    } catch {
-      setError('Server error sending email!');
-    }
-    setSending(false);
+
+    const subject = encodeURIComponent("Shared Summary");
+    const body = encodeURIComponent(summary);
+
+    // Open Gmail compose in new tab
+    window.open(
+      `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`,
+      '_blank'
+    );
   };
 
   return (
@@ -68,15 +60,14 @@ export default function SummaryPage() {
           className="flex-1 p-3 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <button
-          disabled={sending || !summary || !email}
+          disabled={!summary || !email}
           onClick={handleSend}
           className="inline-flex gap-2 items-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold px-5 py-3 rounded-md disabled:opacity-60 transition-all"
         >
-          <PaperAirplaneIcon className={`w-5 h-5 ${sending ? "animate-spin" : ""}`} />
-          {sending ? 'Sending...' : 'Send Email'}
+          <PaperAirplaneIcon className="w-5 h-5" />
+          Send via Gmail
         </button>
       </div>
-      {sent && <div className="text-green-600 font-medium mb-2">Summary sent successfully!</div>}
       {error && <div className="text-red-600 font-medium mb-2">{error}</div>}
     </main>
   );

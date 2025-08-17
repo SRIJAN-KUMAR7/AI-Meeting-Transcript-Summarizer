@@ -1,4 +1,3 @@
-
 import React from 'react';
 import './globals.css';
 export const metadata = {
@@ -19,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <footer className="bg-white shadow p-4 text-center text-sm text-gray-500">
-          &copy; 2025 AI Notes Summarizer-Internshala Assignment
+          &copy; 2025 AI Notes Summarizer
         </footer>
       </body>
     </html>

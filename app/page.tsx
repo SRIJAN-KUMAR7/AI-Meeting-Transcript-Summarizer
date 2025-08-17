@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ArrowPathIcon, InboxIcon, ClipboardDocumentIcon, SparklesIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import './globals.css';
+import SummaryPage from './summary';
 
 export default function HomePage() {
   const [transcript, setTranscript] = useState('');
@@ -136,18 +137,7 @@ export default function HomePage() {
       </div>
 
       {summary && (
-        <div className="bg-white shadow-lg rounded-lg p-8 max-w-4xl mx-auto">
-          <h2 className="flex items-center gap-2 text-2xl font-extrabold text-indigo-700 mb-4">
-            <SparklesIcon className="w-7 h-7 text-indigo-600" />
-            Generated Summary
-          </h2>
-          <textarea
-            value={summary}
-            onChange={(e) => setSummary(e.target.value)}
-            rows={12}
-            className="w-full p-5 border border-gray-300 rounded-md font-mono whitespace-pre-wrap resize-y text-gray-900 shadow-inner focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-          />
-        </div>
+        <SummaryPage sum={summary}/>
       )}
     </section>
   );
